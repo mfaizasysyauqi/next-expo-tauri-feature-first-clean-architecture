@@ -183,10 +183,17 @@ All design tokens live in a **single, platform-agnostic** `theme.ts` inside `pac
 | **Border Radius (CSS)** | `THEME.radius` | `borderRadius: THEME.radius.lg` | — |
 | **Border Radius (num)** | `THEME.radiusNum` | — | `borderRadius: THEME.radiusNum.lg` |
 | **Font Size (num)** | `THEME.fontSizeNum` | `fontSize: THEME.fontSizeNum.md` | Same |
+| **Font Weight (CSS)** | `THEME.fontWeight` | `fontWeight: THEME.fontWeight.bold` | — |
+| **Font Weight (num)** | `THEME.fontWeightNum` | — | `fontWeight: THEME.fontWeightNum.bold` |
+| **Line Height (CSS)** | `THEME.lineHeight` | `lineHeight: THEME.lineHeight.normal` | — |
+| **Line Height (num)** | `THEME.lineHeightNum` | — | Multiply with `fontSize` |
+| **Font Families** | `THEME.fontFamily` | `.sans`, `.mono` via CSS variable | `.regular` / `.bold` (expo-font names) |
 | **Elevation (RN)** | `THEME.elevation` | — | Spread: `...THEME.elevation.md` |
 | **Shadows (CSS)** | `THEME.shadows` | `boxShadow: THEME.shadows.lg` | — |
 | **Z-Index** | `THEME.zIndex` | `zIndex: THEME.zIndex.modal` | `zIndex` in `StyleSheet` |
 | **Animation** | `THEME.animation` | `transition: ${THEME.animation.duration.normal}` | `Animated.timing(...)` |
+| **Icon Size (num)** | `THEME.iconSizeNum` | `size={THEME.iconSizeNum.xl}` | Same |
+| **Breakpoints** | `THEME.breakpoints` | `@media (min-width: ${THEME.breakpoints.tablet}px)` | `useWindowDimensions()` comparisons |
 
 ---
 
