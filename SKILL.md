@@ -1,9 +1,9 @@
 ---
-name: next-expo-tauri-feature-based-clean-architecture
+name: next-expo-tauri-feature-first-clean-architecture
 description: Production-grade Universal Feature-First Clean Architecture for Next.js (Web), Expo (Mobile), and Tauri (Desktop) Monorepos with shared TypeScript Core and Database packages. Inspired by Flutter Clean Architecture and DDD principles.
 ---
 
-# Next.js + Expo + Tauri Feature-Based Clean Architecture
+# Next.js + Expo + Tauri Feature-First Clean Architecture
 
 This skill provides comprehensive architectural guidelines, patterns, and best practices for building scalable, 100% DRY, and maintainable cross-platform monorepos targeting **Web (Next.js)**, **Mobile (Expo React Native)**, and **Desktop (Tauri)**.
 

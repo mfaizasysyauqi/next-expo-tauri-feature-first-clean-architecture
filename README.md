@@ -1,4 +1,4 @@
-# Next.js + Expo + Tauri Feature-Based Clean Architecture
+# Next.js + Expo + Tauri Feature-First Clean Architecture
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
@@ -194,9 +194,9 @@ All design tokens live in a **single, platform-agnostic** `theme.ts` inside `pac
 
 Copy the directory or `SKILL.md` to your agent customization directory:
 
-- **Antigravity / Gemini Global**: `~/.gemini/config/skills/next-expo-tauri-feature-based-clean-architecture/`
-- **Project Specific**: `.agents/skills/next-expo-tauri-feature-based-clean-architecture/`
-- **Claude Code**: `.claude/skills/next-expo-tauri-feature-based-clean-architecture/`
+- **Antigravity / Gemini Global**: `~/.gemini/config/skills/next-expo-tauri-feature-first-clean-architecture/`
+- **Project Specific**: `.agents/skills/next-expo-tauri-feature-first-clean-architecture/`
+- **Claude Code**: `.claude/skills/next-expo-tauri-feature-first-clean-architecture/`
 
 ---
 
