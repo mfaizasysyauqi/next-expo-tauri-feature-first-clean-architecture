@@ -84,6 +84,11 @@ Break feature interfaces into focused, single-responsibility components:
 
 ```text
 apps/web/src/features/cart/
+├── data/
+│   ├── cartApi.ts                   # API client / Supabase queries
+│   └── cartMapper.ts                # DTO → Domain Entity mapper
+├── domain/
+│   └── cartCalculations.ts          # Pure business logic (reuse from @monorepo/core)
 ├── store/
 │   └── useCartStore.ts
 └── components/
@@ -109,9 +114,11 @@ apps/mobile/src/
 │
 └── features/                        # Domain Features
     ├── auth/
+    │   ├── data/authApi.ts
     │   ├── store/useAuthStore.ts
     │   └── presentation/AccountView.tsx
     ├── cart/
+    │   ├── data/cartApi.ts
     │   ├── domain/cartCalculations.ts
     │   ├── store/useCartStore.ts
     │   └── presentation/
@@ -122,6 +129,7 @@ apps/mobile/src/
     │       │   └── CartPriceSummary.tsx
     │       └── CartModal.tsx
     ├── pos/
+    │   ├── data/posApi.ts
     │   ├── domain/posUtils.ts       # Receipt formatting & ESC/POS text
     │   ├── store/usePOSStore.ts
     │   └── presentation/
@@ -131,6 +139,7 @@ apps/mobile/src/
     │       │   └── POSReceiptModal.tsx
     │       └── POSView.tsx
     └── orders/
+        ├── data/ordersApi.ts
         ├── store/useOrderStore.ts
         └── presentation/OrdersView.tsx
 ```
