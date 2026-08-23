@@ -312,3 +312,148 @@ import type {
   AnimationDuration,  // "instant" | "fast" | "normal" | "slow" | "xSlow"
 } from "@yourmonorepo/core";
 ```
+
+---
+
+## 📐 9. Responsive & Adaptive Multiplatform Patterns (Mobile, Tablet, Desktop)
+
+A truly unified codebase must handle disparate screen sizes and input methods seamlessly across **Mobile (touch)**, **Tablet / Foldable (hybrid touch/stylus)**, and **Desktop / Web (mouse/keyboard, multi-window)**.
+
+### 1. Universal Breakpoints Scale (`packages/core/src/theme.ts`)
+
+Always reference the canonical breakpoint tokens defined in `@monorepo/core`:
+
+| Device Class | Viewport Range | Web / Desktop Condition | Mobile Expo (RN) Condition |
+| :--- | :--- | :--- | :--- |
+| **Mobile (Compact)** | `0px - 639px` | `@media (max-width: 639px)` | `width < THEME.breakpoints.tablet` |
+| **Tablet (Medium)** | `640px - 1023px` | `@media (min-width: 640px) and (max-width: 1023px)` | `width >= 640 && width < 1024` |
+| **Desktop (Expanded)**| `1024px - 1439px` | `@media (min-width: 1024px)` | `width >= 1024` |
+| **Wide / Ultra (Large)**| `1440px+` | `@media (min-width: 1440px)` | `width >= 1440` |
+
+---
+
+### 2. Adaptive Navigation & Layout Transitions
+
+| UI Element | Mobile (`< 640px`) | Tablet (`640px - 1023px`) | Desktop (`>= 1024px`) |
+| :--- | :--- | :--- | :--- |
+| **Primary Navigation** | Fixed **Bottom Tab Bar** (4-5 tabs) | Slim **Navigation Rail** (icons only) | Persistent **Left Sidebar** (expanded with labels) |
+| **List / Detail (e.g. Chat, POS, Orders)** | **Stacked Screens**: Tap item navigates to full detail screen | **Collapsible Split**: List rail + main pane | **Fixed Master-Detail**: Side-by-side dual pane view |
+| **Overlays & Dialogs** | **Bottom Sheet** (swipe down to dismiss, 85% max height) | **Floating Modal** (centered, 480px width) | **Centered Dialog** (with keyboard `Esc` handler & backdrop blur) |
+| **Action Triggers** | Floating Action Button (FAB) / sticky bottom bar | Header action icons | Top action bar / Keyboard shortcuts (`Cmd/Ctrl + K`) |
+| **Form Layouts** | 1 Column (vertical stack) | 2 Columns (grouped fields) | 2-3 Columns with side summary card |
+
+---
+
+### 3. Implementation: Web & Desktop (Next.js / Tauri)
+
+Use pure CSS tokens with modern CSS grid / flex and container queries:
+
+```css
+/* apps/web/src/shared/styles/responsive.css */
+.master-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+}
+
+/* Tablet & Desktop Layout */
+@media (min-width: 768px) {
+  .master-detail-layout {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+@media (min-width: 1200px) {
+  .master-detail-layout {
+    grid-template-columns: 320px 1fr 340px; /* Sidebar + Main Content + Inspector */
+  }
+}
+```
+
+---
+
+### 4. Implementation: Mobile & Tablet (Expo / React Native)
+
+Use `useWindowDimensions()` paired with responsive helpers for adaptive rendering:
+
+```tsx
+// apps/mobile/src/core/hooks/useDeviceLayout.ts
+import { useWindowDimensions } from 'react-native';
+import { THEME } from '@chatbyok/core';
+
+export function useDeviceLayout() {
+  const { width, height } = useWindowDimensions();
+
+  const isMobile = width < THEME.breakpoints.tablet; // < 640
+  const isTablet = width >= THEME.breakpoints.tablet && width < THEME.breakpoints.desktop; // 640 - 1023
+  const isDesktop = width >= THEME.breakpoints.desktop; // >= 1024
+  const isLandscape = width > height;
+
+  return {
+    width,
+    height,
+    isMobile,
+    isTablet,
+    isDesktop,
+    isLandscape,
+    isSplitView: isTablet || isDesktop, // Enables master-detail layout
+  };
+}
+```
+
+#### Example: Adaptive Split-View Component (Expo)
+
+```tsx
+// apps/mobile/src/features/chat/presentation/AdaptiveChatContainer.tsx
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { useDeviceLayout } from '../../../core/hooks/useDeviceLayout';
+import { SessionDrawer } from './components/SessionDrawer';
+import { ChatScreen } from './ChatScreen';
+
+export function AdaptiveChatContainer() {
+  const { isSplitView } = useDeviceLayout();
+
+  if (isSplitView) {
+    // Tablet / Desktop: Dual-pane Master-Detail side-by-side
+    return (
+      <View style={styles.splitRow}>
+        <View style={styles.masterPane}>
+          <SessionDrawer isInline />
+        </View>
+        <View style={styles.detailPane}>
+          <ChatScreen />
+        </View>
+      </View>
+    );
+  }
+
+  // Mobile: Single screen with overlay drawer
+  return <ChatScreen />;
+}
+
+const styles = StyleSheet.create({
+  splitRow: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  masterPane: {
+    width: 300,
+    borderRightWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+  },
+  detailPane: {
+    flex: 1,
+  },
+});
+```
+
+---
+
+### 5. Multiplatform Responsive Golden Rules
+
+1. **No Ad-Hoc Breakpoint Numbers**: Always import `THEME.breakpoints` from `@monorepo/core`. Never hardcode `768`, `1024`, or `600` randomly across components.
+2. **Touch Targets for Mobile**: Ensure touchable elements have at least `44x44px` hitSlop / size on Mobile, while Desktop can be compact (`32-36px`).
+3. **Safe Area Insets**: Always wrap mobile roots with `SafeAreaProvider` and `useSafeAreaInsets()` to prevent notch/island clipping.
+4. **Keyboard Avoidance**: On Mobile, wrap input forms with `KeyboardAvoidingView` (`behavior={Platform.OS === 'ios' ? 'padding' : undefined}`). On Web/Desktop, standard flex layouts handle this automatically.
+
